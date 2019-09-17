@@ -1,0 +1,15 @@
+<form #applicationForm="ngForm" (ngSubmit)="onClickSubmit(applicationForm.value)" >
+        <input type="text" name="forename" placeholder="Forename" ngModel>
+        <br/>
+        <input type="text" name="surname" placeholder="Surname" ngModel>
+        <br/>
+        <input type="date" name="dateOfBirth" ngModel>
+        <br/>
+        <input type="number" name="annualIncome" placeholder="Annual Income" ngModel>
+        <br/>
+        <input type="submit" value="Submit">
+    </form>
+
+<h1 *ngIf="suggestedProduct">{{ suggestedProduct.cardName }}</h1>
+    
+    
