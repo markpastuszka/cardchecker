@@ -1,7 +1,6 @@
 # cardchecker
 
-Made in VS2019, SQL Server 2017. Will require node to run.
-Circular dependency is gone, and DB functionality is implemented. I've had a go at the DB structure suggested too!
+Made in VS2019, SQL Server 2017, .NET Core 2.2, Node, Angular
 
 Areas I'm not happy with:
 - I got most of the way there with the DB solution suggested but hit two snags which would require bodges/breaking away from the given brief/potentially risky code to fix, hence why I have stuck with the one DB but left the code in to demo where I was going:
