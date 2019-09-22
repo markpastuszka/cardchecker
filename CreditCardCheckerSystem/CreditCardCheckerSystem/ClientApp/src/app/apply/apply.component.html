@@ -1,15 +1,17 @@
-<form #applicationForm="ngForm" (ngSubmit)="onClickSubmit(applicationForm.value)" >
-        <input type="text" name="forename" placeholder="Forename" ngModel>
+<form #applicationForm="ngForm" (ngSubmit)="onClickSubmit(applicationForm.value)" ngNativeValidate>
+        <input type="text" name="forename" placeholder="Forename" ngModel required>
         <br/>
-        <input type="text" name="surname" placeholder="Surname" ngModel>
+        <input type="text" name="surname" placeholder="Surname" ngModel required>
         <br/>
-        <input type="date" name="dateOfBirth" ngModel>
+        <input type="date" name="dateOfBirth" ngModel required>
         <br/>
-        <input type="number" name="annualIncome" placeholder="Annual Income" ngModel>
+        <input type="number" name="annualIncome" placeholder="Annual Income" ngModel required>
         <br/>
         <input type="submit" value="Submit">
     </form>
 
 <h1 *ngIf="suggestedProduct">{{ suggestedProduct.cardName }}</h1>
+<h2 *ngIf="suggestedProduct">APR Rate: {{ suggestedProduct.aprRate }}%</h2>
+<h2 *ngIf="suggestedProduct">{{ suggestedProduct.promoMessage }}</h2>
     
     

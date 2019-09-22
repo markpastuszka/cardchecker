@@ -4,7 +4,8 @@ import { SuggestedProduct, CustomerApplication } from '../models';
 
 @Component({
   selector: 'apply',
-  templateUrl: './apply.component.html'
+  templateUrl: './apply.component.html',
+  styleUrls: ['./apply.component.css']
 })
 export class ApplyComponent {
 

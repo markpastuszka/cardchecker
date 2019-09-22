@@ -1,29 +1,50 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using CreditCardCheckerSystem.Models;
+using CreditCardCheckerSystem.Services;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CreditCardCheckerSystem.Controllers
 {
     [Route("api/[controller]")]
     public class ApplicationCheckController : Controller
     {
-
+        private readonly IDBAccessService dbAccess;
+        public ApplicationCheckController(IDBAccessService access)
+        {
+            dbAccess = access;
+        }
         [HttpPost("[action]")]
-        public SuggestedProduct SubmitApplication([FromBody] CustomerApplication application)
+        public Product SubmitApplication([FromBody] Application application)
         {
             var suggestion = CheckAvailability(application);
-
-            // write to DB
-
+            dbAccess.RecordRecommendation(application, suggestion);
             return suggestion;
+
+            //var products = dbAccess.RetrieveAllProducts();
+            //var approvedProducts = new List<Product>();
+            //foreach (Product product in products)
+            //{
+            //    var criteria = dbAccess.GetCriteriaForProduct(product.Id);
+            //    if (VerifyCriteria(criteria, application))
+            //    {
+            //        approvedProducts.Add(product);
+            //    }
+            //}
+
+            //if (approvedProducts.Any())
+            //{
+            //    return approvedProducts.First();
+            //} else
+            //{
+            //    return Ineligible;
+            //}
         }
 
-        private SuggestedProduct CheckAvailability(CustomerApplication application)
+        private Product CheckAvailability(Application application)
         {
-            if (!CustomerIsOver18(application.DateOfBirth))
+            if (!VerifyCustomerAge(application.DateOfBirth))
             {
                 return Ineligible;
             }
@@ -33,57 +54,37 @@ namespace CreditCardCheckerSystem.Controllers
                 : Barclaycard;
         }
 
-        private bool CustomerIsOver18(DateTime customerDob) 
+        private bool VerifyCustomerAge(DateTime customerDob) 
         {
+            if (customerDob.Year < 1900 || customerDob > DateTime.Today)
+            {
+                return false;
+            }
             DateTime today = DateTime.Today;
             int age = today.Year - customerDob.Year;
             if (customerDob > today.AddYears(-age)) age--;
             return age >= 18;
         }
 
-        private readonly SuggestedProduct Ineligible = new SuggestedProduct
+        private readonly Product Ineligible = new Product
         {
             CardName = "Ineligible",
             AprRate = 0.0d,
             PromoMessage = "No credit cards are available"
         };
 
-        private readonly SuggestedProduct Vanquis = new SuggestedProduct
+        private readonly Product Vanquis = new Product
         {
             CardName = "Vanquis",
             AprRate = 50.0d,
             PromoMessage = "Free pizza every time you use it!"
         };
 
-        private readonly SuggestedProduct Barclaycard = new SuggestedProduct
+        private readonly Product Barclaycard = new Product
         {
             CardName = "Barclaycard",
             AprRate = 5.0d,
             PromoMessage = "Entitles you to a free Ferrari every year!"
         };
-
-        public class SuggestedProduct
-        {
-            [JsonProperty("cardName")]
-            public string CardName { get; set; }
-
-            [JsonProperty("aprRate")]
-            public double AprRate { get; set; }
-
-            [JsonProperty("promoMessage")]
-            public string PromoMessage { get; set; }
-        }
-
-        public class CustomerApplication
-        {
-            [JsonProperty("forename")]
-            public string Forename { get; set; }
-            [JsonProperty("surname")]
-            public string Surname { get; set; }
-            [JsonProperty("dateOfBirth")]
-            public DateTime DateOfBirth { get; set; }
-            [JsonProperty("annualIncome")]
-            public int AnnualIncome { get; set; }
-        }
     }
 }
